@@ -1,5 +1,5 @@
 syntax = "proto3";
-package monitoring_backup.proto;
+package monitoring_backup;
 
 message CreatedNotify{
   string kebun = 1;
