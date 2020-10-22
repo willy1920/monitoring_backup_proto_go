@@ -1,0 +1,12 @@
+syntax = "proto3";
+package monitoring_backup.proto;
+
+message CreatedNotify{
+  string kebun = 1;
+  string timestamp = 2;
+  string status = 4;
+}
+
+service MonitoringBackup{
+  rpc SendNotif(CreatedNotify) returns (CreatedNotify){}
+}
