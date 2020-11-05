@@ -1,6 +1,5 @@
 syntax = "proto3";
 package monitoring_backup;
-import "google/protobuf/empty.proto";
 
 message CreatedNotify{
   string kebun = 1;
@@ -23,7 +22,9 @@ message MonitoringLogs{
   repeated MonitoringLog monitoringLogs = 1;
 }
 
+message Empty{}
+
 service MonitoringBackup{
   rpc SendNotif(CreatedNotify) returns (ResponseNotif){}
-  rpc GetMonitoringLogs(google.protobuf.Empty) returns(MonitoringLogs){}
+  rpc GetMonitoringLogs(Empty) returns(MonitoringLogs){}
 }

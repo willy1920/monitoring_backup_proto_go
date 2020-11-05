@@ -4,7 +4,6 @@ package monitoring_backup
 
 import (
 	context "context"
-	empty "github.com/golang/protobuf/ptypes/empty"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -19,7 +18,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MonitoringBackupClient interface {
 	SendNotif(ctx context.Context, in *CreatedNotify, opts ...grpc.CallOption) (*ResponseNotif, error)
-	GetMonitoringLogs(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*MonitoringLogs, error)
+	GetMonitoringLogs(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*MonitoringLogs, error)
 }
 
 type monitoringBackupClient struct {
@@ -39,7 +38,7 @@ func (c *monitoringBackupClient) SendNotif(ctx context.Context, in *CreatedNotif
 	return out, nil
 }
 
-func (c *monitoringBackupClient) GetMonitoringLogs(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*MonitoringLogs, error) {
+func (c *monitoringBackupClient) GetMonitoringLogs(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*MonitoringLogs, error) {
 	out := new(MonitoringLogs)
 	err := c.cc.Invoke(ctx, "/monitoring_backup.MonitoringBackup/GetMonitoringLogs", in, out, opts...)
 	if err != nil {
@@ -53,7 +52,7 @@ func (c *monitoringBackupClient) GetMonitoringLogs(ctx context.Context, in *empt
 // for forward compatibility
 type MonitoringBackupServer interface {
 	SendNotif(context.Context, *CreatedNotify) (*ResponseNotif, error)
-	GetMonitoringLogs(context.Context, *empty.Empty) (*MonitoringLogs, error)
+	GetMonitoringLogs(context.Context, *Empty) (*MonitoringLogs, error)
 	mustEmbedUnimplementedMonitoringBackupServer()
 }
 
@@ -64,7 +63,7 @@ type UnimplementedMonitoringBackupServer struct {
 func (UnimplementedMonitoringBackupServer) SendNotif(context.Context, *CreatedNotify) (*ResponseNotif, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendNotif not implemented")
 }
-func (UnimplementedMonitoringBackupServer) GetMonitoringLogs(context.Context, *empty.Empty) (*MonitoringLogs, error) {
+func (UnimplementedMonitoringBackupServer) GetMonitoringLogs(context.Context, *Empty) (*MonitoringLogs, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMonitoringLogs not implemented")
 }
 func (UnimplementedMonitoringBackupServer) mustEmbedUnimplementedMonitoringBackupServer() {}
@@ -99,7 +98,7 @@ func _MonitoringBackup_SendNotif_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _MonitoringBackup_GetMonitoringLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(empty.Empty)
+	in := new(Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -111,7 +110,7 @@ func _MonitoringBackup_GetMonitoringLogs_Handler(srv interface{}, ctx context.Co
 		FullMethod: "/monitoring_backup.MonitoringBackup/GetMonitoringLogs",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MonitoringBackupServer).GetMonitoringLogs(ctx, req.(*empty.Empty))
+		return srv.(MonitoringBackupServer).GetMonitoringLogs(ctx, req.(*Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
