@@ -17,6 +17,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MonitoringBackupClient interface {
+	Health(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error)
 	SendNotif(ctx context.Context, in *CreatedNotify, opts ...grpc.CallOption) (*ResponseNotif, error)
 	GetMonitoringLogs(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*MonitoringLogs, error)
 }
@@ -27,6 +28,15 @@ type monitoringBackupClient struct {
 
 func NewMonitoringBackupClient(cc grpc.ClientConnInterface) MonitoringBackupClient {
 	return &monitoringBackupClient{cc}
+}
+
+func (c *monitoringBackupClient) Health(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/monitoring_backup.MonitoringBackup/Health", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *monitoringBackupClient) SendNotif(ctx context.Context, in *CreatedNotify, opts ...grpc.CallOption) (*ResponseNotif, error) {
@@ -51,6 +61,7 @@ func (c *monitoringBackupClient) GetMonitoringLogs(ctx context.Context, in *Empt
 // All implementations must embed UnimplementedMonitoringBackupServer
 // for forward compatibility
 type MonitoringBackupServer interface {
+	Health(context.Context, *Empty) (*Empty, error)
 	SendNotif(context.Context, *CreatedNotify) (*ResponseNotif, error)
 	GetMonitoringLogs(context.Context, *Empty) (*MonitoringLogs, error)
 	mustEmbedUnimplementedMonitoringBackupServer()
@@ -60,6 +71,9 @@ type MonitoringBackupServer interface {
 type UnimplementedMonitoringBackupServer struct {
 }
 
+func (UnimplementedMonitoringBackupServer) Health(context.Context, *Empty) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Health not implemented")
+}
 func (UnimplementedMonitoringBackupServer) SendNotif(context.Context, *CreatedNotify) (*ResponseNotif, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendNotif not implemented")
 }
@@ -77,6 +91,24 @@ type UnsafeMonitoringBackupServer interface {
 
 func RegisterMonitoringBackupServer(s grpc.ServiceRegistrar, srv MonitoringBackupServer) {
 	s.RegisterService(&_MonitoringBackup_serviceDesc, srv)
+}
+
+func _MonitoringBackup_Health_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MonitoringBackupServer).Health(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/monitoring_backup.MonitoringBackup/Health",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MonitoringBackupServer).Health(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _MonitoringBackup_SendNotif_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -119,6 +151,10 @@ var _MonitoringBackup_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "monitoring_backup.MonitoringBackup",
 	HandlerType: (*MonitoringBackupServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Health",
+			Handler:    _MonitoringBackup_Health_Handler,
+		},
 		{
 			MethodName: "SendNotif",
 			Handler:    _MonitoringBackup_SendNotif_Handler,

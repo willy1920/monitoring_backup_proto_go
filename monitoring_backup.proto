@@ -25,6 +25,7 @@ message MonitoringLogs{
 message Empty{}
 
 service MonitoringBackup{
+  rpc Health(Empty) returns (Empty){}
   rpc SendNotif(CreatedNotify) returns (ResponseNotif){}
-  rpc GetMonitoringLogs(Empty) returns(MonitoringLogs){}
+  rpc GetMonitoringLogs(Empty) returns (MonitoringLogs){}
 }
